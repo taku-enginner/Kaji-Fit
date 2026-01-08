@@ -188,7 +188,7 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
 
       if (shouldSync == true) {
         final healthKitService = ref.read(healthKitServiceProvider);
-        final success =
+        final (success, errorMessage) =
             await healthKitService.writeWorkoutSession(workoutSession);
 
         if (success) {
@@ -196,12 +196,19 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
           await repository.markAsSynced(workoutSession);
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('HealthKitに同期しました')),
+            const SnackBar(
+              content: Text('HealthKitに同期しました'),
+              backgroundColor: Colors.green,
+            ),
           );
         } else {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('HealthKitへの同期に失敗しました')),
+            SnackBar(
+              content: Text(errorMessage ?? 'HealthKitへの同期に失敗しました'),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 5),
+            ),
           );
         }
       }
