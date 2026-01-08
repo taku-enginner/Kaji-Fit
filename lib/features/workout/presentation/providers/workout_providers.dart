@@ -33,3 +33,9 @@ final todayTotalDurationProvider = FutureProvider<double>((ref) async {
   final repository = ref.watch(workoutRepositoryProvider);
   return await repository.getTodayTotalDuration();
 });
+
+/// 全ワークアウトセッションのプロバイダー
+final allWorkoutSessionsProvider = FutureProvider((ref) async {
+  final repository = ref.watch(workoutRepositoryProvider);
+  return await repository.getAllWorkoutSessions();
+});

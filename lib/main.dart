@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'config/theme.dart';
 import 'config/routes.dart';
 import 'shared/providers/database_provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('ja');
   runApp(const ProviderScope(child: KajiFitApp()));
 }
 
