@@ -47,19 +47,48 @@ class HealthKitService {
       debugPrint('  Activity: ${session.activityType.displayName}');
       debugPrint('  Start: ${session.startTime}');
       debugPrint('  End: ${session.endTime}');
-      debugPrint('  Calories: ${session.caloriesBurned}');
+      debugPrint('  Calories (raw): ${session.caloriesBurned}');
+      debugPrint('  Calories (rounded): ${session.caloriesBurned.round()}');
 
-      // ワークアウトデータを作成
+      // ワークアウトデータを作成（四捨五入して整数に、最小値1kcal）
+      // HealthKitは0kcalのワークアウトを正しく表示しない場合があるため
+      final caloriesRounded = session.caloriesBurned.round();
+      final caloriesToWrite = caloriesRounded > 0 ? caloriesRounded : 1;
+
+      debugPrint('  Calories (to write): $caloriesToWrite');
+
       final success = await _health.writeWorkoutData(
         activityType: HealthWorkoutActivityType.OTHER,
         start: session.startTime,
         end: session.endTime,
-        totalEnergyBurned: session.caloriesBurned.toInt(),
+        totalEnergyBurned: caloriesToWrite,
         totalEnergyBurnedUnit: HealthDataUnit.KILOCALORIE,
         title: 'Kaji-Fit: ${session.activityType.displayName}',
       );
 
       debugPrint('HealthKit write result: $success');
+
+      // エネルギーデータを個別に書き込む（より確実な方法）
+      // ワークアウトとは別にアクティブエネルギーとして書き込む
+      if (success) {
+        try {
+          // 小数点以下も含めた正確な値を書き込む
+          final energyValue = session.caloriesBurned > 0 ? session.caloriesBurned : 1.0;
+          debugPrint('  Writing energy data: $energyValue kcal');
+
+          final energyWritten = await _health.writeHealthData(
+            value: energyValue,
+            type: HealthDataType.ACTIVE_ENERGY_BURNED,
+            startTime: session.startTime,
+            endTime: session.endTime,
+            unit: HealthDataUnit.KILOCALORIE,
+          );
+          debugPrint('  Energy data write result: $energyWritten');
+        } catch (e) {
+          debugPrint('  Energy data write error (non-fatal): $e');
+          // エネルギーデータの書き込みに失敗してもワークアウトは成功とする
+        }
+      }
 
       if (!success) {
         return (false, 'HealthKitへの書き込みに失敗しました');
