@@ -31,12 +31,15 @@ class KajiFitApp extends ConsumerWidget {
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const CircularProgressIndicator(),
-                const SizedBox(height: 16),
+              children: const [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
                 Text(
                   'Kaji-Fit',
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
