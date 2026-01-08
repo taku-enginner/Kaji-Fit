@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSHealthShareUsageDescription</key>
+	<string>ワークアウトデータをヘルスケアアプリに同期するために使用します</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>家事トレーニングの消費カロリーをヘルスケアアプリに記録するために使用します</string>
+	<key>NSMotionUsageDescription</key>
+	<string>家事動作を検知するために加速度センサーを使用します</string>
 </dict>
 </plist>
